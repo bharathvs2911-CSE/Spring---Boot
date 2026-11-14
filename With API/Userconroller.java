@@ -1,0 +1,48 @@
+package com.example.demo.controller; 
+ 
+import com.example.demo.entity.User; 
+import com.example.demo.repository.UserRepository; 
+import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.http.ResponseEntity; 
+import org.springframework.web.bind.annotation.*; 
+ 
+import java.util.List; 
+ 
+@RestController 
+@RequestMapping("/sports") public class Usercontroller { 
+ 
+    @Autowired 
+    private UserRepository userRepository; 
+ 
+    @GetMapping 
+    public List<User> getAllUser() { 
+        return this.userRepository.findAll(); 
+    } 
+ 
+    @GetMapping("/{id}") 
+    public User getUserById(@PathVariable(value = "id") long userId) {         
+	return this.userRepository.findById(userId).orElseThrow();     
+    } 
+ 
+    @PostMapping 
+    public User createUser(@RequestBody User user) { 
+        return this.userRepository.save(user); 
+    } 
+ 
+    @PutMapping("/{id}") 
+    public User updateUser(@RequestBody User user, @PathVariable("id") long userId) { 
+        User ex = this.userRepository.findById(userId).orElseThrow();         
+	ex.setname(user.getname()); 
+        ex.setdepartment(user.getdepartment());         
+	ex.setdesignation(user.getdesignation());         
+	ex.setqualification(user.getqualification());         
+	return this.userRepository.save(ex); 
+    } 
+ 
+    @DeleteMapping("/{id}") 
+    public ResponseEntity<User> deleteUser(@PathVariable("id") long userId) { 
+        User ex = this.userRepository.findById(userId).orElseThrow(); 
+        this.userRepository.delete(ex);         
+	return ResponseEntity.ok().build(); 
+    } 
+} 
